@@ -2,10 +2,12 @@
 variable "eks_cluster_role_name" {
   description = "IAM role name for the EKS cluster"
   type        = string
+  default     = "eks_worker_role"
 }
 variable "vpc_id" {
   description = "ID of the existing VPC"
   type        = string
+  default     = "new-vpc"
 }
 variable "aws_region" {
   description = "AWS region where resources will be deployed"
@@ -28,6 +30,7 @@ variable "instance_types" {
 variable "public_subnet_ids" {
   description = "List of subnet IDs where the EKS worker nodes will be deployed"
   type        = list(string)
+  default     = ["PublicSubnet1", "PublicSubnet2"]
 }
 
 variable "ami_type" {
@@ -74,7 +77,7 @@ variable "max_size" {
 
 variable "common_tags" {
   description = "Common tags for all resources"
-  type = map(string)
+  type        = map(string)
   default = {
     "Name"        = "eks-worker-node",
     "environment" = "dev",

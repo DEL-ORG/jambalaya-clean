@@ -1,36 +1,38 @@
+resource "aws_iam_role" "eks_worker_role" {
+  name = "eks_worker_role"
 
-# Define IAM Role for EKS Cluster Control Plane
-resource "aws_iam_role" "eks_cluster_role" {
-  name               = var.eks_cluster_role_name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action    = "sts:AssumeRole"
+        Action = "sts:AssumeRole"
         Principal = {
-          Service = "eks.amazonaws.com"
+          Service = "ec2.amazonaws.com"
         }
-        Effect    = "Allow"
-        Sid       = ""
+        Effect = "Allow"
+        Sid    = ""
       },
     ]
   })
 }
 
-# Attach the AmazonEKSClusterPolicy to the EKS Control Plane Role
-resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_cluster_role.name
+resource "aws_iam_role_policy_attachment" "eks_worker_policy_attachment" {
+  role       = aws_iam_role.eks_worker_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
-# Attach the AmazonEKSServicePolicy to the EKS Control Plane Role
-resource "aws_iam_role_policy_attachment" "eks_service_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.eks_cluster_role.name
+resource "aws_iam_role_policy_attachment" "eks_cni_policy_attachment" {
+  role       = aws_iam_role.eks_worker_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
-# Attach the VPC Policy (AmazonVPCFullAccess) to the EKS Cluster Role
-resource "aws_iam_role_policy_attachment" "eks_vpc_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
-  role       = aws_iam_role.eks_cluster_role.name
+resource "aws_iam_role_policy_attachment" "eks_registrar_policy_attachment" {
+  role       = aws_iam_role.eks_worker_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+# Attach the AmazonELBFullAccess policy for Load Balancer management
+resource "aws_iam_role_policy_attachment" "eks_elb_policy_attachment" {
+  role       = aws_iam_role.eks_worker_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonELBFullAccess"
 }

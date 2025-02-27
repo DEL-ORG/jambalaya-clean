@@ -23,3 +23,9 @@ variable "aws_region" {
   type        = string
   default     = "us-east-1"
 }
+# Common tags for resources
+variable "common_tags" {
+  description = "Common tags to be applied to resources"
+  type        = map(string)
+
+}
