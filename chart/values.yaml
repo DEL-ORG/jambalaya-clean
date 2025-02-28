@@ -6,8 +6,10 @@ image:
 replicaCount: 2
 
 service:
-  type: ClusterIP
-  port: 8080
+  type: LoadBalancer
+  port: 9080       
+  targetPort: 8080 
+
 
 ingress:
   enabled: false
