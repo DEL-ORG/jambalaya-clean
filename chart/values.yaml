@@ -1,6 +1,6 @@
 image:
-  repository: ubuntu/apache2
-  tag: latest
+  repository: rosinebelle/s7rosine_jambalaya
+  tag: V1.0.62
   pullPolicy: IfNotPresent
 
 replicaCount: 2
